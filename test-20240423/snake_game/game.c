@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "snake.c"
 
-void MapPrint(int map[][10]) {
-    printf("\n开始游戏(w:up, a:left, s:down, d:right, 0:退出)-->: \n");
+void show_map(int map[10][10]) {
+    printf("\n开始游戏(w:up, a:left, s:down, d:right, 0:退出)--> \n");
     for(int i=0; i<10; i++)
 		{
 			for(int j=0; j<10; j++)
@@ -35,41 +36,52 @@ int main()
 	int map[10][10] = {
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 2, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 2, 0, 0, 0, 1},
 		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 2, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 2, 1},
-		{1, 0, 0, 0, 0, 2, 0, 0, 0, 1},
+		{1, 0, 0, 0, 2, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	};
 
-	int x = 4;
-	int y = 4;
+	SNAKE snake;
+	snake_init(&snake);
+	snake_insert(&snake, 7, 6,map);
+	snake_insert(&snake, 6, 6,map);
 
 	while(1)
 	{
 		system("clear");
 
-		map[x][y] = 3;
+		// map[x][y] = 3;
+		snake_on_map(&snake, map);
+        show_map(map);
 
-        MapPrint(map);
         char ch = getchar();
 
+		if (ch == 'w' || ch == 'a' || ch == 's' || ch == 'd') {
+			snake_clear_map(&snake,map);
+		}
+		
 		switch(ch)
 		{
 		    case 'w':
-                map[x--][y] = 0;
+				snake_up(&snake,map);
+                // map[x--][y] = 0;
                 break;
             case 'a':
-                map[x][y--] = 0;
+				snake_left(&snake,map);
+                // map[x][y--] = 0;
                 break;
             case 's':
-                map[x++][y] = 0;
+				snake_down(&snake,map);
+                // map[x++][y] = 0;
                 break;
             case 'd': 
-                map[x][y++] = 0;
+				snake_right(&snake,map);
+                // map[x][y++] = 0;
                 break;
             case '0':
                 printf("退出成功~~\n");
@@ -79,10 +91,5 @@ int main()
                 printf("请输入有效字符~~");
                 break;
 		}
-
-        if(x==0) x=1;
-		if(x==9) x=8;
-		if(y==0) y=1;
-		if(y==9) y=8;
 	}
 }
