@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include "process.h"
 
-// #include <signal.h>
 #include <string.h>
-#include <unistd.h>
+#include "util.h"
 #include <time.h>
+#include <unistd.h>
 
 void process_init(PROCESS *processList) {
 	processList->next = processList->prev = NULL;
@@ -20,14 +20,10 @@ static JOB create_job() {
 	job.priority = 3;
 
 	// 获取当前时间
-	time_t current_time;
-    struct tm *local_time;
+	struct tm cur_time = get_cur_time();
 
-    current_time = time(NULL);
-    local_time = localtime(&current_time);
-
-    int hour = local_time->tm_hour;
-    int minute = local_time->tm_min;
+    int hour = cur_time.tm_hour;
+    int minute = cur_time.tm_min;
 
     // 计算总的分钟数
     long total_minutes = hour * 60 + minute;
