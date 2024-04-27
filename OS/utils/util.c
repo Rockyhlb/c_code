@@ -61,7 +61,7 @@ void *find_last_path(const char *path,char *last_path) {
     // 当前路径已经是根目录时
     if(strcmp(path,"/") == 0) {
         strcpy(last_path,"/");
-        return;
+        return 0;
     }
     // 遍历字符数组找到最后一个路径的起始位置
     int i;

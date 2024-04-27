@@ -74,22 +74,20 @@ void file_put(FILEHASH *root, const char *key, File value) {
     root->buckets[hashval] = new_node;
 }
 
-// 根据当前路径遍历文件
+// 根据当前路径遍历文件 -- ls
 void file_show_cur(FILEHASH* root, char *path) {
     HashNode *current_node;
-    char current_path[CUR_MAX_PATH] = "";
+    char read_path[CUR_MAX_PATH] = "";
 
     // 如果路径为空，则从根目录开始
     if (strlen(path) == 0) {
-        strcpy(current_path, "/");
+        strcpy(read_path, "/");
     } else {
-        strcpy(current_path, path);
+        strcpy(read_path, path);
     }
 
     // 获取当前路径的文件节点
-    char cur_dir[60];
-    find_last_path(path,cur_dir);
-    current_node = file_get_by_key(root, current_path);
+    current_node = file_getnode_by_key(root, read_path);
 
     // 检查当前文件类型是否为目录
     if (current_node == NULL || current_node->value.type != DIRECTORY) {
@@ -98,11 +96,11 @@ void file_show_cur(FILEHASH* root, char *path) {
     }
 
     // 输出当前目录下的文件列表
-    printf("Files in directory '%s':\n", current_path);
+    printf("Files in directory '%s':\n", read_path);
 
     current_node = current_node->next;
     while (current_node != NULL) {
-        printf("%s\n", current_node->key);
+        printf("%s\n", current_node->value.name);
         current_node = current_node->next;
     }
 }
@@ -129,14 +127,51 @@ char *file_cd_path(FILEHASH *fileHash, char *cur_path) {
 }
 
 // 在Hash表中根据key获取链表头节点
-File *file_get_by_key(FILEHASH *root, const char *key) {
+HashNode *file_getnode_by_key(FILEHASH *root, const char *key) {
+    // 计算键的哈希值
     unsigned int hashval = hash(key) % HASH_SIZE;
+    
+    // 获取指定索引处的链表头节点
     HashNode *node = root->buckets[hashval];
+    
+    // 遍历链表，找到与给定键匹配的节点
     while (node != NULL) {
         if (strcmp(node->key, key) == 0) {
-            return &(node->value); // 返回文件的元数据或内容
+            return node; // 找到与键匹配的节点，返回该节点
         }
-        node = node->next;
+        node = node->next; // 继续遍历下一个节点
     }
-    return NULL; // 文件不存在
+    
+    return NULL; // 没有找到与键匹配的节点，返回 NULL
+}
+
+void file_show_cur_detail(FILEHASH* root, char *path) {
+    HashNode *current_node;
+    char read_path[CUR_MAX_PATH] = "";
+
+    // 如果路径为空，则从根目录开始
+    if (strlen(path) == 0) {
+        strcpy(read_path, "/");
+    } else {
+        strcpy(read_path, path);
+    }
+
+    // 获取当前路径的文件节点
+    current_node = file_getnode_by_key(root, read_path);
+
+    // 检查当前文件类型是否为目录
+    if (current_node == NULL || current_node->value.type != DIRECTORY) {
+        printf("Invalid directory.\n");
+        return;
+    }
+
+    // 输出当前目录下的文件列表
+    printf("Files in directory '%s':\n", read_path);
+    current_node = current_node->next;
+    while (current_node != NULL) {
+        printf("%s\t%s\t%s\t%s\t2d\t%d\t%d\t%s\t%s",current_node->value.type,current_node->value.permissions,current_node->value.group_id,current_node->value.owner_id,current_node->value.size,
+                        current_node->value.month,current_node->value.day,current_node->value.time_str,current_node->value.name);
+        printf("%s\n", current_node->value.name);
+        current_node = current_node->next;
+    }
 }

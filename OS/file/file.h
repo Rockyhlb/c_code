@@ -63,10 +63,10 @@ void file_put(FILEHASH *root, const char *key, File value);
 // 根据当前路径遍历文件
 void file_show_cur(FILEHASH* root, char *path);
 
+// 在Hash表中根据key获取链表头节点
+HashNode *file_getnode_by_key(FILEHASH *root, const char *key);
+
 // cd /绝对
 char *file_cd_path(FILEHASH *fileHash, char *cur_path);
-
-// 在Hash表中根据key获取链表头节点
-File *file_get_by_key(FILEHASH *root, const char *key);
 
 #endif

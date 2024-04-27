@@ -107,16 +107,17 @@ int main() {
 				// 如果最后一个路径为空，则表示当前已经是根目录，直接将当前路径设置为根目录 "/"
 				strcpy(cur_path,"/");
 			}
+		} else if (0 == strcmp(buf,"ls")) {
+			file_show_cur(&fileHash,cur_path);
+		} else if (0 == strcmp(buf,"ll")) {
+			file_show_cur_detail(&fileHash,cur_path);
 		} else if (0 == strcmp(buf,"exit")) {
             // 退出登录
 			printf("退出成功~~\n");
 			cur_path[0] = '\0';
             break;
-		} else if (0 == strcmp(buf,"ls")) {
-			file_show_cur(&fileHash,cur_path);
 		} else {
-			printf("%s",cur_path);
-			printf("Invalid command! try help!\n");
+			printf("bash: %s: Invalid command...\n",buf);
 		}
 	}
     return 0;
